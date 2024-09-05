@@ -275,6 +275,7 @@ void C_RageBot::Instance( )
 					HandleAccuracyFailure( );
 
 					/* do not continue */
+		
 					bContinueRageBot = false;
 				}
 
@@ -317,7 +318,6 @@ void C_RageBot::Instance( )
 					RageShot->m_flWeaponDamage = static_cast < float > ( pWeaponData->m_iDamage );
 					RageShot->m_vecShootPosition = g_LocalAnimations->GetShootPosition( );
 					RageShot->m_nTrackedTicks = g_Utils->TimeToTicks( Records.back( ).m_flSimulationTime - m_ScanData.m_AimTarget.m_Record.m_flSimulationTime );
-				#ifdef OVERSEE_DEV
 					auto GetHitboxNameFromId = [ & ] ( int id ) -> std::string
 					{
 						switch ( id )
@@ -380,7 +380,6 @@ void C_RageBot::Instance( )
 
 					/* print console msg */
 					SDK::Interfaces::CVar->ConsolePrintf( szConsoleMessage.c_str( ) );
-				#endif
 
 					/* Capture matrix for on shot chams */
 					g_ShotChams->OnRageBotFire( m_ScanData.m_AimTarget.m_Player, m_ScanData.m_AimTarget.m_Record.m_Matricies[ EBoneMatrix::Visual ].data( ), m_ScanData.m_AimTarget.m_Record.m_vecAbsOrigin );
@@ -997,9 +996,9 @@ AimPointData_t C_RageBot::CalculateTargetPoint( C_BasePlayer* Player, const Vect
 		Data->m_vecTargetPosition = Point.m_vecPoint;
 		Data->m_nPriority = Point.m_nPriority;
 		Data->m_Hitbox = Point.m_nHitBox;
-		Threading::QueueJobRef( g_AutoWall->ScanPoint, Data );
+		g_AutoWall->ScanPoint(Data);
 	}
-	Threading::FinishQueue( );
+	//Threading::FinishQueue( );
 
 	/* remove invalid data */
 	for ( int nIt = 0; nIt < m_Data.size( ); nIt++ )

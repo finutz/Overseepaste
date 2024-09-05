@@ -191,11 +191,11 @@ void C_SettingsManager::SetupData( )
 		this->B.insert( {   _S( "ragebot."  ) + subname +  _S( ".safe_priority" ), false } );
 		this->B.insert( {   _S( "ragebot."  ) + subname +  _S( ".dynamic_points" ), false } );
 
-		this->I.insert( {   _S( "ragebot."  ) + subname +  _S( ".min_damage" ), 80 } );
-		this->I.insert( {   _S( "ragebot."  ) + subname +  _S( ".hit_chance" ), 80 } );
-		this->I.insert( {   _S( "ragebot."  ) + subname +  _S( ".accuracy_boost" ), 80 } );
-		this->I.insert( {   _S( "ragebot."  ) + subname +  _S( ".head_scale" ), 80 } );
-		this->I.insert( {   _S( "ragebot."  ) + subname +  _S( ".body_scale" ), 80 } );
+		this->I.insert( {   _S( "ragebot."  ) + subname +  _S( ".min_damage" ), 84 } );
+		this->I.insert( {   _S( "ragebot."  ) + subname +  _S( ".hit_chance" ), 101 } );
+		this->I.insert( {   _S( "ragebot."  ) + subname +  _S( ".accuracy_boost" ), 64 } );
+		this->I.insert( {   _S( "ragebot."  ) + subname +  _S( ".head_scale" ), 64 } );
+		this->I.insert( {   _S( "ragebot."  ) + subname +  _S( ".body_scale" ), 23 } );
 
 		this->B.insert( {   _S( "ragebot."  ) + subname +  _S( ".double_tap_1" ), false } );
 		this->B.insert( {   _S( "ragebot."  ) + subname +  _S( ".double_tap_2" ), false } );

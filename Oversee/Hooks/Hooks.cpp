@@ -84,7 +84,7 @@ void C_Hooks::Initialize( )
 	void* pPacketEnd = ( void* ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "engine.dll" ), _S( "56 8B F1 E8 ? ? ? ? 8B 8E ? ? ? ? 3B 8E ? ? ? ?" ) ) ) );
 	void* pCL_Move = ( void* ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "engine.dll" ), _S( "55 8B EC 81 EC 64 01 00 00 53 56 8A F9" ) ) ) );
 	void* pProcessTempEntities = ( void* ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "engine.dll" ), _S( "55 8B EC 83 E4 F8 83 EC 4C A1 ? ? ? ? 80 B8" ) ) ) );
-	void* pIsUsingDebugStaticProps = ( void* ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "engine.dll" ), _S( "8B 0D ? ? ? ? 81 F9 ? ? ? ? 75 ? A1 ? ? ? ? 35 ? ? ? ? EB ? 8B 01 FF 50 ? 83 F8 ? 0F 85 ? ? ? ? 8B 0D" ) ) ) );
+	void* pIsUsingDebugStaticProps = ( void* )( ( DWORD )( g_Utils->PatternScan( _S( "engine.dll" ), _S( "55 8B EC 83 E4 F8 83 EC 5C 53 8B D9 8B" ) ) ) + 0x4D + 2 );
 	void* pSendNetMessage = ( void* ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "engine.dll" ), _S( "55 8B EC 83 EC 08 56 8B F1 8B 4D 04 E8 ? ? ? ? 8B" ) ) ) );
 	void* pClampBonesInBBOX = ( void* ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "client.dll" ), _S( "55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 38 83" ) ) ) );
 	void* pModifyEyePosition = ( void* ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "client.dll" ), _S( "55 8B EC 83 E4 F8 83 EC 70 56 57 8B F9 89 7C 24 14 83 7F 60" ) ) ) );

@@ -14,7 +14,7 @@ public:
 	bool m_bTrackIrAvailable; // 0xC
 	bool m_bMouseInitialized; // 0xD
 	bool m_bMouseActive; // 0xE
-	char pad1[ 0x9E ]; // 0xF
+	char pad1[ 0x9A ]; // 0xF
 	bool m_bCameraInThirdPerson; // 0xAD
 	char pad2[ 0x2 ]; // 0xAE
 	Vector m_vecCameraOffset; // 0xB0

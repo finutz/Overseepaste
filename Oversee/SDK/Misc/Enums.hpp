@@ -225,7 +225,7 @@ enum class CheatConvarList
 	ClUpdateRate,
 	SvMinUpdateRate,
 	SvMaxUpdateRate,
-	SvLegacyDesync,
+	//SvLegacyDesync,
 	SvClientMinInterpRatio,
 	SvClientMaxInterpRatio,
 	DamageReductionBullets,

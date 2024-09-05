@@ -31,6 +31,8 @@ public:
     };
 
 	int m_iKeyName; // keyname is a symbol defined in KeyValuesSystem
+    int m_iUnk1;
+    int m_iUnk2;
 
     char* m_sValue;
     wchar_t* m_wsValue;

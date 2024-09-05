@@ -304,15 +304,16 @@ void FASTCALL C_Hooks::hkLevelInitPreEntity( LPVOID pEcx, uint32_t, const char* 
 
 	return Hooks::o_LevelInitPreEntity( pEcx, szNewMapName );
 }
-__declspec( naked ) void __stdcall C_Hooks::hkCreateMove_Handler( int iSequence, float flFrameTime, bool bIsActive )
+
+__attribute__( ( naked ) ) void __stdcall C_Hooks::hkCreateMove_Handler( int iSequence, float flFrameTime, bool bIsActive )
 {
 	__asm
 	{
 		push ebx
 		push esp
-		push dword ptr[ esp + 8 + 8 + 4 ]
-		push dword ptr[ esp + 12 + 8 ]
-		push[ esp + 16 + 4 ]
+		push dword ptr[esp + 8 + 8 + 4]
+		push dword ptr[esp + 12 + 8]
+		push[esp + 16 + 4]
 		call hkCreateMove
 		pop ebx
 		retn 12

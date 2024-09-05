@@ -94,7 +94,7 @@ void C_LogManager::Instance( )
 			);
 
 		// draw log icon
-		g_Renderer->AddText( imIconFont, imIconFont->FontSize, ImVec2( 4.0f + 10, flTotalSpacing + 3.0f + 10 ), g_LogManager->GetIconFromID( m_EventLog->m_nLogIcon ), imIconColor, false );
+		//g_Renderer->AddText( imIconFont, imIconFont->FontSize, ImVec2( 4.0f + 10, flTotalSpacing + 3.0f + 10 ), g_LogManager->GetIconFromID( m_EventLog->m_nLogIcon ), imIconColor, false );
 
 		// get log text
 		ImColor imTextColor =

@@ -103,14 +103,20 @@ void C_Hooks::hkEmitSound( LPVOID pEcx, uint32_t, IRecipientFilter& pFilter, int
 
 	return Hooks::o_EmitSound( pEcx, pFilter, iEntIndex, iChannel, pSoundEntry, nSoundEntryHash, szSoundName, flVolume, nSeed, flAttenuation, iFlags, iPitch, pOrigin, pDirection, pUtlVecOrigins, bUpdatePositions, flSoundTime, nSpeakerEntity, unk );
 }
+
+
 void C_Hooks::hkPlaySound( LPVOID pEcx, uint32_t, const char* szSoundEntry )
 {
 	return Hooks::o_PlaySound( pEcx, szSoundEntry );
 }
+
+
 void C_Hooks::CL_LagCompensation_Callback( IConVar* pConVar, const char* szOldValue, float flOldValue )
 {
 	g_Globals->m_Packet.m_bAntiExploit = flOldValue == 1.0f;
 }
+
+
 void C_Hooks::hkOnScreenSizeChanged( LPVOID pEcx, uint32_t, int nOldWidth, int nOldHeigth )
 {
 	Hooks::o_OnScreenSizeChanged( pEcx, nOldWidth, nOldHeigth );

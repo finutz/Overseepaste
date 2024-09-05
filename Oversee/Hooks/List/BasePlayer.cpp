@@ -24,8 +24,8 @@ void C_Hooks::hkDoExtraBoneProcessing( LPVOID pEcx, uint32_t, C_StudioHDR* pHdr,
 void C_Hooks::hkClampBonesInBBOX( LPVOID pEcx, uint32_t, int a1, int a2 )
 {
 	/* Awesome HvH plugin support */
-	if ( SDK::EngineData::m_ConvarList[ CheatConvarList::SvLegacyDesync ]->GetBool( ) )
-		return;
+	//if ( SDK::EngineData::m_ConvarList[ CheatConvarList::SvLegacyDesync ]->GetBool( ) )
+	//	return;
 
 	float flCurTime = SDK::Interfaces::GlobalVars->m_flCurTime;
 

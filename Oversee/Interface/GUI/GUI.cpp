@@ -634,13 +634,13 @@ void C_UIElements::Configuration( CloudConfig_t config )
 
 	window->DrawList->AddRectFilled( bb.Max - ImVec2( 48, 48 ), bb.Max - ImVec2( 12, 12 ), ImColor( 0, 153, 255 ), 5 );
 	window->DrawList->AddText( g_Menu->m_sFonts.MenuIcons, 16, bb.Max - ImVec2( 48 - 11, 48 - 10 ), ImColor( 240, 240, 240 ), "d" );
-	if ( ImGui::IsItemClicked( ) && ImGui::IsMouseHoveringRect( bb.Max - ImVec2( 48, 48 ), bb.Max - ImVec2( 12, 12 ) ) )
-		strcpy( g_CloudConfigs->aConfigID, config.SecureID.c_str( ) ), g_CloudConfigs->CloudAction = CloudActions_t::GetConfigData;
+	//if ( ImGui::IsItemClicked( ) && ImGui::IsMouseHoveringRect( bb.Max - ImVec2( 48, 48 ), bb.Max - ImVec2( 12, 12 ) ) )
+		//strcpy( g_CloudConfigs->aConfigID, config.SecureID.c_str( ) ), g_CloudConfigs->CloudAction = CloudActions_t::GetConfigData;
 
 	window->DrawList->AddRectFilled( bb.Max - ImVec2( 78, 48 - 6 ), bb.Max - ImVec2( 54, 12 + 6 ), ImColor( 99, 99, 99 ), 5 );
 	window->DrawList->AddText( g_Menu->m_sFonts.MenuIcons, 14, bb.Max - ImVec2( 78 - 5, 48 - 10 ), ImColor( 240, 240, 240 ), "c" );
-	if ( ImGui::IsItemClicked( ) && ImGui::IsMouseHoveringRect( bb.Max - ImVec2( 78, 42 ), bb.Max - ImVec2( 54, 18 ) ) )
-		strcpy( g_CloudConfigs->aConfigID, config.SecureID.c_str( ) ), g_CloudConfigs->CloudAction = CloudActions_t::SaveConfig;
+	//if ( ImGui::IsItemClicked( ) && ImGui::IsMouseHoveringRect( bb.Max - ImVec2( 78, 42 ), bb.Max - ImVec2( 54, 18 ) ) )
+		//strcpy( g_CloudConfigs->aConfigID, config.SecureID.c_str( ) ), g_CloudConfigs->CloudAction = CloudActions_t::SaveConfig;
 
 	window->DrawList->AddText( bb.Min + ImVec2( 70, 7 ), ImColor( 240, 240, 240 ), config.Name.c_str( ) );
 	window->DrawList->AddText( bb.Min + ImVec2( 70, 23 ), ImColor( 240, 240, 240 ), "by" );
@@ -654,35 +654,35 @@ void C_UIElements::Script( CloudScript_t config )
 	ImGuiContext& g = *GImGui;
 
 	const ImGuiStyle& style = g.Style;
-	const ImGuiID id = window->GetID( config.SecureID.c_str( ) );
+	//const ImGuiID id = window->GetID( config.SecureID.c_str( ) );
 
 	const ImVec2 pos = window->DC.CursorPos;
 	const ImVec2 size = ImGui::CalcItemSize( { 580, 60 }, 295, 75 );
 	ImRect bb( pos, pos + size );
 
 	ImGui::ItemSize( size, style.FramePadding.y );
-	if ( !ImGui::ItemAdd( bb, id ) )
-		return;
+	//if ( !ImGui::ItemAdd( bb, id ) )
+		//return;
 
 	bool hovered, held;
-	ImGui::ButtonBehavior( bb, id, &hovered, &held, 0 );
+	//ImGui::ButtonBehavior( bb, id, &hovered, &held, 0 );
 
-	float Active = ImTricks::Animations::FastFloatLerp( id, hovered, 0.f, 1.f, 0.03f );
-	ImColor Color = ImTricks::Animations::FastColorLerp( ImColor( 65, 65, 65 ), ImColor( 75, 75, 75 ), Active );
+	//float Active = ImTricks::Animations::FastFloatLerp( id, hovered, 0.f, 1.f, 0.03f );
+	//ImColor Color = ImTricks::Animations::FastColorLerp( ImColor( 65, 65, 65 ), ImColor( 75, 75, 75 ), Active );
 
-	window->DrawList->AddRectFilled( bb.Min, bb.Max, Color, 5 );
+	//window->DrawList->AddRectFilled( bb.Min, bb.Max, Color, 5 );
 	window->DrawList->AddRectFilled( bb.Min, bb.Min + ImVec2( 60, 60 ), ImColor( 34, 34, 34 ), 5 );
 
-	window->DrawList->AddRectFilled( bb.Max - ImVec2( 48, 48 ), bb.Max - ImVec2( 12, 12 ), g_LuaAPI->Loaded.at( config.ID ) ? ImColor( 0, 153, 255 ) : ImColor( 99, 99, 99 ), 5 );
+	//window->DrawList->AddRectFilled( bb.Max - ImVec2( 48, 48 ), bb.Max - ImVec2( 12, 12 ), g_LuaAPI->Loaded.at( config.ID ) ? ImColor( 0, 153, 255 ) : ImColor( 99, 99, 99 ), 5 );
 	window->DrawList->AddText( g_Menu->m_sFonts.MenuIcons, 16, bb.Max - ImVec2( 48 - 11, 48 - 10 ), ImColor( 240, 240, 240 ), "d" );
-	if ( ImGui::IsItemClicked( ) && ImGui::IsMouseHoveringRect( bb.Max - ImVec2( 48, 48 ), bb.Max - ImVec2( 12, 12 ) ) ) {
-		if ( !g_LuaAPI->Loaded.at( config.ID ) )
-			g_LuaAPI->Load( config.ID );
-		else
-			g_LuaAPI->Unload( config.ID );
-	}
+	//if ( ImGui::IsItemClicked( ) && ImGui::IsMouseHoveringRect( bb.Max - ImVec2( 48, 48 ), bb.Max - ImVec2( 12, 12 ) ) ) {
+		//if ( !g_LuaAPI->Loaded.at( config.ID ) )
+			//g_LuaAPI->Load( config.ID );
+		//else
+			//g_LuaAPI->Unload( config.ID );
+	//}
 
-	if ( config.Author == config.Owner )
+	/*if ( config.Author == config.Owner )
 	{
 		if ( g_LuaAPI->InEdit.at( config.ID ) && g_LuaAPI->InEditMD5.at( config.ID ) != config.MD5 )
 		{
@@ -712,12 +712,12 @@ void C_UIElements::Script( CloudScript_t config )
 				ShellExecute( 0, 0, std::string( config.SecureID + ".lua" ).c_str( ), 0, 0, SW_SHOW );
 			}
 		}
-	}
+	}*/
 
-	window->DrawList->AddText( bb.Min + ImVec2( 70, 7 ), ImColor( 240, 240, 240 ), config.Name.c_str( ) );
-	window->DrawList->AddText( bb.Min + ImVec2( 70, 23 ), ImColor( 240, 240, 240 ), "by" );
-	window->DrawList->AddText( bb.Min + ImVec2( 86, 23 ), ImColor( 0, 153, 255 ), config.Author.c_str( ) );
-	window->DrawList->AddText( bb.Min + ImVec2( 70, 39 ), ImColor( 190, 190, 190 ), timeStampToHReadble( config.UpdatedAt ).c_str( ) );
+	//window->DrawList->AddText( bb.Min + ImVec2( 70, 7 ), ImColor( 240, 240, 240 ), config.Name.c_str( ) );
+	//window->DrawList->AddText( bb.Min + ImVec2( 70, 23 ), ImColor( 240, 240, 240 ), "by" );
+	//window->DrawList->AddText( bb.Min + ImVec2( 86, 23 ), ImColor( 0, 153, 255 ), config.Author.c_str( ) );
+	//window->DrawList->AddText( bb.Min + ImVec2( 70, 39 ), ImColor( 190, 190, 190 ), timeStampToHReadble( config.UpdatedAt ).c_str( ) );
 }
 
 bool BeginChildEx( const char* name, ImGuiID id, const ImVec2& size_arg, bool border, ImGuiWindowFlags flags )

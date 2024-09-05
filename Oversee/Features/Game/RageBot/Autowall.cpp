@@ -214,7 +214,7 @@ bool C_AutoWall::SimulateFireBullet( PenetrationData_t* m_PenetrationData )
 		// create ray
 		Ray_t Ray;
 		Ray.Init( m_PenetrationData->m_vecShootPosition, vecEnd );
-
+		 
 		// run trace
 		SDK::Interfaces::EngineTrace->TraceRay( Ray, MASK_SHOT_HULL | CONTENTS_HITBOX, ( CTraceFilter* ) ( aSkipTwoEntities.data( ) ), &m_PenetrationData->m_EnterTrace );
 		{
@@ -400,6 +400,7 @@ void C_AutoWall::ScanPoint( PenetrationData_t* m_PenetrationData )
 	if ( !m_PenetrationData->m_bSuccess )
 		m_PenetrationData->m_flCurrentDamage = -1.0f;
 }
+
 Vector C_AutoWall::GetPointDirection( const Vector& vecShootPosition, const Vector& vecTargetPosition )
 {
 	Vector vecDirection;

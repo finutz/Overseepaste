@@ -16,7 +16,7 @@ void* C_KeyValues::operator new( size_t allocatedsize )
     if ( !pKeyValuesSystem )
         pKeyValuesSystem = ( reinterpret_cast< void* ( __cdecl* )( ) >( GetProcAddress( GetModuleHandleA( _S( "vstdlib.dll" ) ), _S( "KeyValuesSystem" ) ) ) )( );
 
-    return reinterpret_cast < NewKeyValues_t > ( GetVFunction_NoObf( pKeyValuesSystem, 1 ) ) ( pKeyValuesSystem, allocatedsize );
+    return reinterpret_cast < NewKeyValues_t > ( GetVFunction_NoObf( pKeyValuesSystem, 2 ) ) ( pKeyValuesSystem, allocatedsize );
 }
 
 void C_KeyValues::operator delete( void* mem )
@@ -25,11 +25,18 @@ void C_KeyValues::operator delete( void* mem )
     if ( !pKeyValuesSystem )
         pKeyValuesSystem = ( reinterpret_cast< PVOID( __cdecl* )( ) >( GetProcAddress( GetModuleHandleA( _S( "vstdlib.dll" ) ), _S( "KeyValuesSystem" ) ) ) )( );
 
-    return reinterpret_cast < RemoveKeyValues_t > ( GetVFunction_NoObf( pKeyValuesSystem, 2 ) ) ( pKeyValuesSystem, mem );
+    return reinterpret_cast < RemoveKeyValues_t > ( GetVFunction_NoObf( pKeyValuesSystem, 3 ) ) ( pKeyValuesSystem, mem );
 }
 
 void C_KeyValues::Init( )
 {
+    m_pValue = NULL;
+
+    m_bHasEscapeSequences = false;
+
+    m_iUnk1 = 0;
+    m_iUnk2 = 0;
+
     m_iKeyName = -1;
     m_iDataType = TYPE_NONE;
 
@@ -39,9 +46,6 @@ void C_KeyValues::Init( )
 
     m_sValue = NULL;
     m_wsValue = NULL;
-    m_pValue = NULL;
-
-    m_bHasEscapeSequences = false;
 
     memset( unused, 0, sizeof( unused ) );
 }

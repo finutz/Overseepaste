@@ -14,7 +14,7 @@ public:
 	virtual void HandleMiss( C_BasePlayer* Player, LagRecord_t* m_Record );
 	virtual void CorrectAnimations( C_BasePlayer* Player, LagRecord_t* m_Record, LagRecord_t* m_PrevRecord );
 	virtual float BuildMoveYaw( C_BasePlayer* Player, float flFootYaw );
-	//virtual void DebugDrawData( C_BasePlayer* Player );
+	virtual float BuildPlaybackRate(C_BasePlayer* Player, int nSide);
 private:
 	std::unordered_map < int, ResolverData_t > m_ResData;
 };

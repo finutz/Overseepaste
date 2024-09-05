@@ -316,29 +316,9 @@ void C_Menu::Instance( )
 		m_tUserAvatar = SteamManager::LocalSteamImage( );
 	}
 
-#ifndef OVERSEE_DEV
-	if ( g_CloudConfigs->CloudAction == CloudActions_t::Initialization )
-	{
-		ImGui::Begin( "Loading Screen", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground );
-		{
-			ImGui::SetWindowSize( ImGui::GetIO( ).DisplaySize );
-			ImGui::SetWindowPos( { 0, 0 } );
-
-			auto Animation = ImTricks::Animations::FastFloatLerp( ImGui::GetID( "Load Anim" ), true, 0.f, 1.f, 0.015f );
-			ImGui::GetWindowDrawList( )->AddRectFilled( ImGui::GetWindowPos( ), ImGui::GetWindowPos( ) + ImGui::GetIO( ).DisplaySize, ImColor( 60, 60, 60, int( Animation * 180 ) ) );
-			ImGui::GetWindowDrawList( )->AddText( g_Menu->m_sFonts.Default24, 20, ImGui::GetWindowPos( ) + ImGui::GetIO( ).DisplaySize / 2 - ImVec2( ImGui::CalcTextSize( "OVERSEE.ONE" ).x / 2, 100 ), ImColor( 255, 255, 255 ), "OVERSEE.ONE" );
-			g_UIElements->Spinner( "Loading", 50, 5, ImColor( 255, 255, 255, int( Animation * 255 ) ), ImGui::GetIO( ).DisplaySize / 2 - ImVec2( 35, 50 ) );
-		}
-		ImGui::End( );
-	}
-#endif
 	if ( !this->IsVisible( ) )
 		return;
 
-#ifndef OVERSEE_DEV
-	if ( !( g_CloudConfigs->CloudAction == CloudActions_t::Initialization ) )
-	{
-#endif
 		RenderItemsControllers( );
 
 		ImGui::Begin( _S( "Fuck the world" ), NULL, nWindowFlags );
@@ -540,8 +520,7 @@ void C_Menu::Instance( )
 
 							g_UIElements->BeginChild( _S( "4" ), { 290, 65 } );
 							{
-								g_UIElements->Checkbox( _S( "Force safepoint ( Temporarily unswitchable )" ), _S( "ragebot.forced_safety" ) );
-								g_SettingsManager->B[ _S( "ragebot.forced_safety" ) ] = true;
+								g_UIElements->Checkbox( _S( "Force safepoint" ), _S( "ragebot.forced_safety" ) );
 							}
 							g_UIElements->EndChild( );
 						}
@@ -1332,7 +1311,7 @@ void C_Menu::Instance( )
 				ImGui::SetCursorPos( { 50, 135 } );
 				ImGui::BeginChild( _S( "##mainframe" ), { size.x - 50, size.y - 200 } );
 				{
-					if ( g_CloudConfigs->CloudAction == CloudActions_t::None ) {
+					/*if ( g_CloudConfigs->CloudAction == CloudActions_t::None ) {
 						if ( m_iSelectedSubTab[ 7 ] == 0 ) {
 							for ( auto config : g_CloudConfigs->m_vConfigs )
 								if ( config.Market == false )
@@ -1348,7 +1327,7 @@ void C_Menu::Instance( )
 					}
 					else {
 						g_UIElements->Spinner( _S( "Fetching Data" ), 40, 4, ImColor( 255, 255, 255 ), pos + ImVec2 { 310, 295 } );
-					}
+					}*/
 				}
 				ImGui::EndChild( );
 
@@ -1357,13 +1336,13 @@ void C_Menu::Instance( )
 				draw->AddRectFilled( pos + ImVec2( size.x - 60, size.y - 55 ), pos + ImVec2( size.x, size.y - 20 ), ImColor( 0, 153, 255 ) );
 				draw->AddText( pos + ImVec2( size.x - 60 + ( 30 - ImGui::CalcTextSize( _S( "Create" ) ).x / 2 ), size.y - 55 + ( 17 - ImGui::CalcTextSize( _S( "Create" ) ).y / 2 ) ), ImColor( 255, 255, 255 ), _S( "Create" ) );
 
-				ImGui::SetCursorPos( { size.x - 60, size.y - 55 } );
-				if ( ImGui::InvisibleButton( _S( "Create" ), { 60, 35 } ) )
-					g_CloudConfigs->CloudAction = CloudActions_t::CreateConfig;
+				//ImGui::SetCursorPos( { size.x - 60, size.y - 55 } );
+				//if ( ImGui::InvisibleButton( _S( "Create" ), { 60, 35 } ) )
+					//g_CloudConfigs->CloudAction = CloudActions_t::CreateConfig;
 
 				ImGui::PushItemWidth( size.x - 48 - 120 );
 				ImGui::SetCursorPos( { 48, size.y - 55 + 7 } );
-				ImGui::InputTextWithHint( _S( "##configbar" ), _S( "Type your config name or share code here..." ), g_CloudConfigs->aConfigName, 64 );
+				//ImGui::InputTextWithHint( _S( "##configbar" ), _S( "Type your config name or share code here..." ), g_CloudConfigs->aConfigName, 64 );
 			}
 			/*else if ( m_iSelectedTab == 8 )
 			{
@@ -1661,10 +1640,6 @@ void C_Menu::Instance( )
 			ImGui::End( );
 			ImGui::PopStyleColor( );
 		}
-
-#ifndef OVERSEE_DEV
-	}
-#endif
 }
 
 #include "Raw/WeaponIcon.h"

@@ -182,83 +182,6 @@ void SDK::Initialize( HINSTANCE hInstance )
 	while ( !GetModuleHandle( _S( "serverbrowser.dll" ) ) )
 		Sleep( 1000 );
 
-#ifdef OVERSEE_DEV
-	/* get CPU Id */
-	auto GetCPUId = [ ] ( ) -> std::string
-	{
-		int CPUInfo[ 4 ] = { -1 };
-		char CPUBrandString[ 0x40 ];
-		__cpuid( 0x80000000, CPUInfo[ 0 ], CPUInfo[ 1 ], CPUInfo[ 2 ], CPUInfo[ 3 ] );
-		unsigned int nExIds = CPUInfo[ 0 ];
-
-		memset( CPUBrandString, 0, sizeof( CPUBrandString ) );
-
-		for ( size_t i = 0x80000000; i <= nExIds; ++i )
-		{
-			__cpuid( i, CPUInfo[ 0 ], CPUInfo[ 1 ], CPUInfo[ 2 ], CPUInfo[ 3 ] );
-			if ( i == 0x80000002 )
-				memcpy( CPUBrandString, CPUInfo, sizeof( CPUInfo ) );
-			else if ( i == 0x80000003 )
-				memcpy( CPUBrandString + 16, CPUInfo, sizeof( CPUInfo ) );
-			else if ( i == 0x80000004 )
-				memcpy( CPUBrandString + 32, CPUInfo, sizeof( CPUInfo ) );
-		}
-
-		return std::string( CPUBrandString );
-	};
-
-	/* get Volume ID */
-	auto GetVolumeID = [ ] ( ) -> std::string
-	{
-		HANDLE hFile = CreateFileA( _S( "\\\\.\\PhysicalDrive0" ), 0, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL );
-		if ( hFile == INVALID_HANDLE_VALUE )
-			return { };
-
-		std::unique_ptr< std::remove_pointer <HANDLE >::type, void( * )( HANDLE ) > hDevice
-		{
-			hFile, [ ] ( HANDLE handle )
-		{
-			CloseHandle( handle );
-		}
-		};
-
-		STORAGE_PROPERTY_QUERY PropertyQuery;
-		PropertyQuery.PropertyId = StorageDeviceProperty;
-		PropertyQuery.QueryType = PropertyStandardQuery;
-
-		STORAGE_DESCRIPTOR_HEADER DescHeader;
-		DWORD dwBytesReturned = 0;
-		if ( !DeviceIoControl( hDevice.get( ), IOCTL_STORAGE_QUERY_PROPERTY, &PropertyQuery, sizeof( STORAGE_PROPERTY_QUERY ),
-			&DescHeader, sizeof( STORAGE_DESCRIPTOR_HEADER ), &dwBytesReturned, NULL ) )
-			return { };
-
-		const DWORD dwOutBufferSize = DescHeader.Size;
-		std::unique_ptr< BYTE[ ] > pOutBuffer { new BYTE[ dwOutBufferSize ] { } };
-
-		if ( !DeviceIoControl( hDevice.get( ), IOCTL_STORAGE_QUERY_PROPERTY, &PropertyQuery, sizeof( STORAGE_PROPERTY_QUERY ),
-			pOutBuffer.get( ), dwOutBufferSize, &dwBytesReturned, NULL ) )
-			return { };
-
-		STORAGE_DEVICE_DESCRIPTOR* pDeviceDescriptor = reinterpret_cast< STORAGE_DEVICE_DESCRIPTOR* >( pOutBuffer.get( ) );
-		if ( !pDeviceDescriptor )
-			return { };
-
-		const DWORD dwSerialNumberOffset = pDeviceDescriptor->SerialNumberOffset;
-		if ( !dwSerialNumberOffset )
-			return { };
-
-		std::string sResult = reinterpret_cast< const char* >( pOutBuffer.get( ) + dwSerialNumberOffset );
-		return sResult;
-	};
-
-	g_Globals->m_szHWID = md5( md5( md5( GetCPUId( ) ) ) + md5( GetCPUId( ) ) + md5( GetVolumeID( ) ) );
-	g_Globals->m_szName = "Developer";
-#endif
-#ifndef OVERSEE_DEV
-	g_Globals->m_szHWID = std::string( ( char* )( hInstance ), 32 );
-	g_CloudConfigs->Auth( );
-#endif
-
 	// get module list
 	HMODULE hClientDll = GetModuleHandle( _S( "client.dll" ) );
 	HMODULE hVGuiDLL = GetModuleHandle( _S( "vguimatsurface.dll" ) );
@@ -315,25 +238,23 @@ void SDK::Initialize( HINSTANCE hInstance )
 	SDK::Interfaces::PanoramaEngine = GetInterface < IPanoramaUIEngine >( hPanorama, _S( "PanoramaUIEngine001" ) );
 	SDK::Interfaces::MDLCache = GetInterface<C_MDLCache>( hDataCache, _S( "MDLCache004" ) );
 	SDK::Interfaces::Effects = GetInterface<IVEffects>( hEngineDll, _S( "VEngineEffects001" ) );
-	SDK::Interfaces::DirectDevice = **( IDirect3DDevice9*** ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "shaderapidx9.dll" ), _S( "A1 ? ? ? ? 50 8B 08 FF 51 0C" ) ) ) + 0x1 );
-	SDK::Interfaces::GlowObjManager = *( IGlowObjectManager** ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "client.dll" ), _S( "0F 11 05 ? ? ? ? 83 C8 01" ) ) ) + 0x3 );
-	SDK::Interfaces::MoveHelper = **( IMoveHelper*** ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "client.dll" ), _S( "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01" ) ) ) + 0x2 );
-	SDK::Interfaces::GlobalVars = **( IGlobalVarsBase*** ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "client.dll" ), _S( "A1 ? ? ? ? 5E 8B 40 10" ) ) ) + 0x1 );
-	SDK::Interfaces::RenderBeams = *( IViewRenderBeams** ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "client.dll" ), _S( "A1 ? ? ? ? FF 10 A1 ? ? ? ? B9" ) ) ) + 0x1 );
-	SDK::Interfaces::ClientState = **( IClientState*** ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "engine.dll" ), _S( "A1 ? ? ? ? 8B 80 ? ? ? ? C3" ) ) ) + 0x1 );
-	SDK::Interfaces::GameRules = *( IGameRules*** ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "client.dll" ), _S( "A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A" ) ) ) + 0x1 );
-	SDK::Interfaces::Input = *( IInput** ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "client.dll" ), _S( "B9 ? ? ? ? F3 0F 11 04 24 FF 50 10" ) ) ) + 0x1 );
-	SDK::Interfaces::MemAlloc = *( IMemAlloc** ) ( GetProcAddress( GetModuleHandleA( _S( "tier0.dll" ) ), _S( "g_pMemAlloc" ) ) );
-	SDK::Interfaces::ClientMode = **( void*** ) ( ( *( uintptr_t** ) ( SDK::Interfaces::CHLClient ) )[ 10 ] + 0x5 );
-	SDK::Interfaces::InventoryManager = *( IInventoryManager** ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "client.dll" ), _S( "C7 05 ? ? ? ? ? ? ? ? BF ? ? ? ? BE" ) ) ) + 0x2 );
-	SDK::Interfaces::PanoramaHelper = *( CPanoramaMarshallHelper** ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "client.dll" ), _S( "68 ? ? ? ? 8B C8 E8 ? ? ? ? 8D 4D F4 FF 15 ? ? ? ? 8B CF FF 15 ? ? ? ? 5F 5E 8B E5 5D C3" ) ) ) + 0x1 );
-	SDK::Interfaces::PlayerResource = *( IPlayerResource*** ) ( ( DWORD ) ( g_Utils->PatternScan( _S( "client.dll" ), _S( "A1 ? ? ? ? 89 44 24 60 85" ) ) ) + 0x1 );
+	SDK::Interfaces::DirectDevice = **(IDirect3DDevice9***)((DWORD)(g_Utils->PatternScan(_S("shaderapidx9.dll"), _S("A1 ? ? ? ? 50 8B 08 FF 51 0C"))) + 0x1);
+	SDK::Interfaces::GlowObjManager = *(IGlowObjectManager**)((DWORD)(g_Utils->PatternScan(_S("client.dll"), _S("0F 11 05 ? ? ? ? 83 C8 01"))) + 0x3);
+	SDK::Interfaces::MoveHelper = **(IMoveHelper***)((DWORD)(g_Utils->PatternScan(_S("client.dll"), _S("8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01"))) + 0x2);
+	SDK::Interfaces::GlobalVars = **(IGlobalVarsBase***)((DWORD)(g_Utils->PatternScan(_S("client.dll"), _S("A1 ? ? ? ? 5E 8B 40 10"))) + 0x1);
+	SDK::Interfaces::RenderBeams = *(IViewRenderBeams**)((DWORD)(g_Utils->PatternScan(_S("client.dll"), _S("A1 ? ? ? ? FF 10 A1 ? ? ? ? B9"))) + 0x1);
+	SDK::Interfaces::ClientState = **(IClientState***)((DWORD)(g_Utils->PatternScan(_S("engine.dll"), _S("A1 ? ? ? ? 8B 80 ? ? ? ? C3"))) + 0x1);
+	SDK::Interfaces::GameRules = *(IGameRules***)((DWORD)(g_Utils->PatternScan(_S("client.dll"), _S("A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A"))) + 0x1);
+	SDK::Interfaces::Input = *(IInput**)((DWORD)(g_Utils->PatternScan(_S("client.dll"), _S("B9 ? ? ? ? F3 0F 11 04 24 FF 50 10"))) + 0x1);
+	SDK::Interfaces::MemAlloc = *(IMemAlloc**)(GetProcAddress(GetModuleHandleA(_S("tier0.dll")), _S("g_pMemAlloc")));
+	SDK::Interfaces::ClientMode = **(void***)((*(uintptr_t**)(SDK::Interfaces::CHLClient))[10] + 0x5);
+	SDK::Interfaces::InventoryManager = *(IInventoryManager**)((DWORD)(g_Utils->PatternScan(_S("client.dll"), _S("C7 05 ? ? ? ? ? ? ? ? BF ? ? ? ? BE"))) + 0x2);
+	SDK::Interfaces::PanoramaHelper = *(CPanoramaMarshallHelper**)((DWORD)(g_Utils->PatternScan(_S("client.dll"), _S("68 ? ? ? ? 8B C8 E8 ? ? ? ? 8D 4D F4 FF 15 ? ? ? ? 8B CF FF 15 ? ? ? ? 5F 5E 8B E5 5D C3"))) + 0x1);
+	SDK::Interfaces::PlayerResource = *(IPlayerResource***)((DWORD)(g_Utils->PatternScan(_S("client.dll"), _S("A1 ? ? ? ? 89 44 24 60 85"))) + 0x1);
 
-	/* 02.02.2022 | Valve's cringe retaddr check bypass */
 	{
 		/* define module list */
-		std::vector < std::string > m_szModuleList
-			=
+		std::vector < std::string > m_szModuleList =
 		{
 			_S( "client.dll" ),
 			_S( "engine.dll" ),
@@ -438,16 +359,16 @@ void SDK::Initialize( HINSTANCE hInstance )
 	};
 
 	/* alloc memory */
-	SDK::EngineData::m_ConvarList[ CheatConvarList::SvLegacyDesync ] = ( ConVar* ) ( malloc( 0x58 ) );
+	//SDK::EngineData::m_ConvarList[ CheatConvarList::SvLegacyDesync ] = ( ConVar* ) ( malloc( 0x58 ) );
 
 	/* init convars */
-	CreateConVar( SDK::EngineData::m_ConvarList[ CheatConvarList::SvLegacyDesync ], "sv_legacy_desync", "0", FCVAR_RELEASE | FCVAR_REPLICATED, "Enables legacy desync on supported servers", true, 0.0f, false, 0.0f );
+	//CreateConVar( SDK::EngineData::m_ConvarList[ CheatConvarList::SvLegacyDesync ], "sv_legacy_desync", "0", FCVAR_RELEASE | FCVAR_REPLICATED, "Enables legacy desync on supported servers", true, 0.0f, false, 0.0f );
 
 	/* init renderer */
 	g_Renderer->SetupData( );
 	g_Menu->SetupData( );
 
-	CloseHandle( CreateThread( NULL, NULL, ( LPTHREAD_START_ROUTINE ) ( HandleConfigs ), NULL, NULL, NULL ) );
+	//CloseHandle( CreateThread( NULL, NULL, ( LPTHREAD_START_ROUTINE ) ( HandleConfigs ), NULL, NULL, NULL ) );
 	std::thread
 	(
 		[ ]( )
@@ -461,7 +382,7 @@ void SDK::Initialize( HINSTANCE hInstance )
 	//CloseHandle( CreateThread( NULL, NULL, ( LPTHREAD_START_ROUTINE ) ( HandleScriptsChanges ), NULL, NULL, NULL ) );
 
 	/* init multithread */
-	Threading::InitThreads( );
+	//Threading::InitThreads( );
 
 	/* create fonts */
 	g_FontManager->PushFont( _S( "Tahoma" ), FnvHash( "Player ESP" ), 72 );
@@ -476,10 +397,10 @@ void SDK::Initialize( HINSTANCE hInstance )
 		cl_lagcompensation->m_fnChangeCallbacks[ cl_lagcompensation->m_fnChangeCallbacks.AddToTail( ) ] = C_Hooks::CL_LagCompensation_Callback;
 
 	/* parse netvars */
-	NetVars::Initialize( );
+	NetVars::Initialize();
 
 	/* inventory changeer */
-	g_ItemManager.Initialize( );
+	g_ItemManager.Initialize();
 
 	/* create chams materials. NOTE: CRASHING SOMETIMES */
 	g_ChamsSystem->InitializeMaterials( );
